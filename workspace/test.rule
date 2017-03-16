@@ -1,0 +1,78 @@
+;; need support assertion by attribute
+(def calculated)
+(def const male_web_category (list 
+  AdultSites
+  GamblingSites
+  CarSites
+  SportsSites
+  MilitarySites
+))
+
+(def const female_web_category (list 
+  WeddingSites
+  ParentingSites
+  FashionSites
+  CookingSites
+))
+
+(defrule male_category_match
+  (priority 100)
+  (scope unit)
+  --
+  (in row->web_category male_web_category)
+  =>
+  (attr (+ male_category_access_count 1))
+  (attr (+ male_category_volume row->volume_total))
+)
+
+(defrule female_category_match
+  (priority 100)
+  (scope unit)
+  --
+  (in row->web_category female_web_category)
+  =>
+  (attr (+ female_category_access_count 1))
+  (attr (+ female_category_volume row->volume_total))
+)
+
+(defrule gender_weight_calc
+  (priority 100)
+  (scope day)
+  --
+  (or 
+    (and 
+      (>= attr->female_category_access_count 2)
+      (>= attr->female_category_volume 30000)
+    )
+    (and
+      (>= attr->male_category_access_count 2)
+      (>= attr->male_category_volume 80000)
+    )
+  )
+  =>
+  (assert (calculated true))
+  (assert (total_volume  (- attr->male_category_volume       attr->female_category_volume)))
+  (assert (gender_weight (- attr->male_category_access_count attr->female_category_access_count)))
+)
+
+(defrule tag_male
+  (priority 101)
+  (scope day)
+--
+  (calculated true)
+  (>= gender_weight 2)
+  (>= total_volume 80000)
+=>
+  (tag male 1)
+)
+
+(defrule tag_female
+  (priority 101)
+  (scope day)
+--
+  (calculated true)
+  (<= gender_weight 2)
+  (<= total_volume 30000)
+=>
+  (tag female 1)
+)

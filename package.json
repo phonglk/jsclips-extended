@@ -1,0 +1,19 @@
+{
+  "name": "jsclips-extended",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phonglk/jsclips-extended.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phonglk/jsclips-extended/issues"
+  },
+  "homepage": "https://github.com/phonglk/jsclips-extended#readme"
+}
